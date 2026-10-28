@@ -226,6 +226,41 @@ body::after{width:240px;height:240px;background:rgba(47,158,143,.16);bottom:60px
 .wrongbox h4{margin:0 0 8px;font-size:13px;color:var(--coral-d);letter-spacing:.06em}
 .wrongbox ul{margin:0;padding-left:18px;font-size:15px;line-height:1.9}
 
+/* ---------- writing ---------- */
+.wordchips{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wchip{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  font-family:inherit;font-size:17px;font-weight:700;letter-spacing:.06em;
+  padding:13px 14px;border-radius:16px;border:1.5px solid var(--line);background:#fff;
+  cursor:pointer;color:var(--ink);transition:transform .14s ease
+}
+.wchip:active{transform:scale(.97)}
+.wchip .wstat{font-size:11.5px;font-weight:700;color:var(--soft);letter-spacing:0}
+.wchip.done{border-color:var(--mint);background:var(--mint-s);color:var(--mint-d)}
+.wchip.done .wstat{color:var(--mint-d)}
+.chars{display:flex;gap:8px;justify-content:center;margin:0 0 12px;flex-wrap:wrap}
+.cdot{
+  width:38px;height:38px;border-radius:11px;display:grid;place-items:center;
+  font-family:"Kaiti SC","Kaiti TC","STKaiti","BiauKai","DFKai-SB","KaiTi","Noto Serif TC","Songti TC",serif;
+  font-size:19px;font-weight:700;background:#fff;border:1.5px solid var(--line);color:var(--soft)
+}
+.cdot.on{border-color:var(--violet);background:var(--violet-s);color:#4b4090}
+.cdot.ok{border-color:var(--mint);background:var(--mint-s);color:var(--mint-d)}
+.tian{
+  position:relative;width:min(76vw,290px);aspect-ratio:1/1;margin:0 auto;
+  border-radius:16px;overflow:hidden;background:#fff;border:1.5px solid var(--line);
+  box-shadow:var(--shadow-sm);touch-action:none
+}
+.tian canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.wctl{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.wctl .btn{width:100%}
+.scoreline{display:flex;align-items:baseline;gap:10px;margin-top:12px;min-height:30px}
+.scorebig{font-size:26px;font-weight:800;color:var(--mint-d);font-variant-numeric:tabular-nums}
+.scorebig small{font-size:13px;font-weight:700;color:var(--soft)}
+.hintline{font-size:13px;color:var(--soft);line-height:1.7}
+.mcard.wide{grid-column:1/-1}
+.mcard[data-tone="sky"] .ico{background:var(--sky-s);color:var(--sky)}
+
 /* ---------- tabbar ---------- */
 .tabbar{
   position:fixed;left:0;right:0;bottom:0;z-index:20;
@@ -347,6 +382,14 @@ body::after{width:240px;height:240px;background:rgba(47,158,143,.16);bottom:60px
         <p>加分站：5 個成語配對＋問答</p>
         <div class="done" id="done-idioms"><span class="dot"></span><span>未開始</span></div>
       </button>
+
+      <button class="mcard wide" data-tone="sky" data-go="write">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><path d="M12 3.5v17M3.5 12h17" stroke-dasharray="2 3"/><path d="M7.5 16c1-2.2 2.2-3.6 3.4-4.2 1.6-.8 2.6.3 1.9 1.6-.6 1.1-2.2 1.2-1.6 2.4.5 1 2 .3 2.9-.5"/></svg></div>
+        <div class="no">05</div>
+        <h3>寫字練習</h3>
+        <p>田字格描紅，逐個字練；蓋住範字就係默寫，寫完即時評分</p>
+        <div class="done" id="done-write"><span class="dot"></span><span>未開始</span></div>
+      </button>
     </div>
 
     <div style="margin-top:12px;display:flex;gap:9px">
@@ -419,6 +462,16 @@ body::after{width:240px;height:240px;background:rgba(47,158,143,.16);bottom:60px
     <div id="idiomStage"></div>
   </section>
 
+  <!-- ================= WRITE ================= -->
+  <section class="screen" id="s-write">
+    <div class="shead">
+      <button class="back" data-go="home" aria-label="返回主頁"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2>寫字練習</h2>
+      <span class="count" id="writeCount"></span>
+    </div>
+    <div id="writeStage"></div>
+  </section>
+
   <!-- ================= RESULT ================= -->
   <section class="screen" id="s-result">
     <div class="panel result" id="resultBody"></div>
@@ -446,6 +499,10 @@ body::after{width:240px;height:240px;background:rgba(47,158,143,.16);bottom:60px
   <button class="tab" data-go="idioms">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9 6.7 19.7l1.1-5.9L3.5 9.7l5.9-.8z"/></svg>
     <span>成語</span>
+  </button>
+  <button class="tab" data-go="write">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M12 4v16M4 12h16" stroke-dasharray="2 3"/></svg>
+    <span>寫字</span>
   </button>
 </nav>
 
@@ -514,7 +571,7 @@ const TOTAL_STARS = FILL.length + PASSAGE_ANSWERS.length + IDIOMS.length + QUIZ.
 
 /* ================= STATE ================= */
 const KEY = 'p3u2_v1';
-function fresh(){ return {cards:[], fill:[], passage:null, match:[], quiz:[]}; }
+function fresh(){ return {cards:[], fill:[], passage:null, match:[], quiz:[], write:{}}; }
 let S = (function(){
   try{
     const raw = localStorage.getItem(KEY);
@@ -630,6 +687,7 @@ function go(name){
   if(name==='fill')    renderFill();
   if(name==='passage') renderPassage();
   if(name==='idioms')  renderIdioms();
+  if(name==='write')   renderWrite();
   if(name==='result')  renderResult();
   window.scrollTo({top:0, behavior:'smooth'});
 }
@@ -659,6 +717,7 @@ function renderHome(){
   doneLabel('fill',    countTrue(S.fill)    ? countTrue(S.fill) + ' / 10 題' : '未開始');
   doneLabel('passage', S.passage ? countTrue(S.passage) + ' / 6 格' : '未開始');
   doneLabel('idioms',  (countTrue(S.match) + countTrue(S.quiz)) ? (countTrue(S.match) + countTrue(S.quiz)) + ' / 8 題' : '未開始');
+  doneLabel('write',   wDoneCount() ? wDoneCount() + ' / 10 詞寫過' : (wAnyScore() ? '練習中' : '未開始'));
 }
 
 /* ================= CARDS ================= */
@@ -994,6 +1053,300 @@ function renderQuizStep(){
   });
 }
 
+
+/* ================= WRITE ================= */
+var SERIF = '"Kaiti SC","Kaiti TC","STKaiti","BiauKai","DFKai-SB","KaiTi","Noto Serif TC","Songti TC","PingFang HK",serif';
+var wWord = null, wChar = 0, wGuide = true, wDrawn = false;
+var gctx = null, ictx = null;
+
+function wCharsOf(wi){ return Array.from(WORDS[wi].w); }
+function wScores(wi){ return (S.write && S.write[WORDS[wi].w]) || []; }
+function wWordDone(wi){
+  var cs = wCharsOf(wi), sc = wScores(wi);
+  return cs.every(function(_, i){ return (sc[i] || 0) >= 7; });
+}
+function wDoneCount(){
+  var n = 0;
+  for(var i=0;i<WORDS.length;i++){ if(wWordDone(i)) n++; }
+  return n;
+}
+function wAnyScore(){
+  if(!S.write) return false;
+  for(var k in S.write){
+    if(Object.prototype.hasOwnProperty.call(S.write, k)){
+      var a = S.write[k] || [];
+      for(var i=0;i<a.length;i++){ if(a[i] > 0) return true; }
+    }
+  }
+  return false;
+}
+
+function renderWrite(){
+  if(!S.write) S.write = {};
+  $('#writeCount').textContent = wDoneCount() + ' / ' + WORDS.length + ' 詞';
+  if(wWord === null) renderWriteList(); else renderWritePad();
+}
+
+function renderWriteList(){
+  var html = '<div class="qcard">'
+    + '<p class="hintline" style="margin:0 0 12px">揀一個詞語，逐個字練。寫到 7 分以上就算過關；'
+    + '按「蓋住範字」就可以閉住眼默寫。</p><div class="wordchips">';
+  WORDS.forEach(function(d, i){
+    var cs = wCharsOf(i), sc = wScores(i);
+    var got = cs.filter(function(_, k){ return (sc[k] || 0) >= 7; }).length;
+    html += '<button type="button" class="wchip' + (got === cs.length ? ' done' : '') + '" data-w="' + i + '">'
+         +  '<span>' + esc(d.w) + '</span>'
+         +  '<span class="wstat">' + got + '/' + cs.length + '</span></button>';
+  });
+  html += '</div>'
+       +  '<p class="hintline" style="margin:12px 0 0">已有 ' + wDoneCount() + ' / ' + WORDS.length + ' 個詞語寫過關。</p>'
+       +  '</div>';
+  $('#writeStage').innerHTML = html;
+  $$('#writeStage [data-w]').forEach(function(b){
+    b.onclick = function(){
+      wWord = +b.dataset.w; wChar = 0; wGuide = true;
+      sfx.tap(); renderWritePad();
+    };
+  });
+}
+
+function renderWritePad(){
+  var d = WORDS[wWord], cs = wCharsOf(wWord), sc = wScores(wWord), ch = cs[wChar];
+  var dots = '';
+  cs.forEach(function(c, i){
+    var cls = 'cdot';
+    if((sc[i] || 0) >= 7) cls += ' ok';
+    if(i === wChar) cls += ' on';
+    dots += '<div class="' + cls + '">' + esc(wGuide ? c : (i + 1)) + '</div>';
+  });
+
+  $('#writeStage').innerHTML =
+      '<div class="qcard">'
+    +   '<div class="chars">' + dots + '</div>'
+    +   '<div class="tian" id="tian"><canvas id="guideCv"></canvas><canvas id="inkCv"></canvas></div>'
+    +   '<div class="wctl">'
+    +     '<button type="button" class="btn ghost sm" id="wToggle">' + (wGuide ? '蓋住範字（默寫）' : '顯示範字（描紅）') + '</button>'
+    +     '<button type="button" class="btn ghost sm" id="wSpeak">聽讀音</button>'
+    +   '</div>'
+    +   '<div class="wctl">'
+    +     '<button type="button" class="btn ghost sm" id="wClear">清除</button>'
+    +     '<button type="button" class="btn primary sm" id="wCheck">檢查</button>'
+    +   '</div>'
+    +   '<div class="scoreline" id="wScore"><span class="hintline">用手指或觸控筆喺田字格寫一次，再按「檢查」。</span></div>'
+    +   '<div class="wctl" style="margin-top:10px">'
+    +     '<button type="button" class="btn ghost sm" id="wPrev">上一個字</button>'
+    +     '<button type="button" class="btn sun sm" id="wNext">下一個字</button>'
+    +   '</div>'
+    +   '<div style="text-align:center;margin-top:10px">'
+    +     '<button type="button" class="btn ghost sm" id="wBack">返回詞語表</button>'
+    +   '</div>'
+    + '</div>';
+
+  setupGrid();
+
+  $('#wToggle').onclick = function(){
+    wGuide = !wGuide; sfx.tap();
+    renderWritePad();
+    if(!wGuide) toast('範字已蓋住，試下默寫');
+  };
+  $('#wSpeak').onclick = function(){ speak(d.w, 0.8); };
+  $('#wClear').onclick = function(){ setupGrid(); sfx.tap(); };
+  $('#wCheck').onclick = function(){ checkWrite(); };
+  $('#wBack').onclick = function(){ wWord = null; sfx.tap(); renderWrite(); };
+  $('#wPrev').onclick = function(){
+    if(wChar > 0){ wChar--; sfx.tap(); } else { wChar = cs.length - 1; sfx.tap(); }
+    renderWritePad();
+  };
+  $('#wNext').onclick = function(){
+    var next = wChar;
+    for(var k=1;k<=cs.length;k++){
+      var c = (wChar + k) % cs.length;
+      if((sc[c] || 0) < 7){ next = c; break; }
+    }
+    if(next === wChar) next = (wChar + 1) % cs.length;
+    wChar = next; sfx.tap(); renderWritePad();
+  };
+}
+
+function setupGrid(){
+  var box = $('#tian'); if(!box) return;
+  var w = Math.round(box.clientWidth || 280);
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var gcv = $('#guideCv'), icv = $('#inkCv');
+
+  [gcv, icv].forEach(function(c){
+    c.width = Math.round(w * dpr); c.height = Math.round(w * dpr);
+    c.style.width = w + 'px'; c.style.height = w + 'px';
+  });
+  gctx = gcv.getContext('2d'); ictx = icv.getContext('2d');
+  gctx.setTransform(dpr,0,0,dpr,0,0); ictx.setTransform(dpr,0,0,dpr,0,0);
+  gctx.clearRect(0,0,w,w); ictx.clearRect(0,0,w,w);
+
+  gctx.save();
+  gctx.strokeStyle = 'rgba(47,158,143,.34)'; gctx.lineWidth = 1.4; gctx.setLineDash([6,5]);
+  gctx.beginPath();
+  gctx.moveTo(w/2, 0); gctx.lineTo(w/2, w);
+  gctx.moveTo(0, w/2); gctx.lineTo(w, w/2);
+  gctx.stroke();
+  gctx.setLineDash([]);
+  gctx.strokeStyle = 'rgba(47,158,143,.45)'; gctx.lineWidth = 2;
+  gctx.strokeRect(1,1,w-2,w-2);
+  gctx.restore();
+
+  if(wGuide){
+    var ch = wCharsOf(wWord)[wChar];
+    gctx.save();
+    gctx.font = '600 ' + (w * 0.66) + 'px ' + SERIF;
+    gctx.textAlign = 'center'; gctx.textBaseline = 'middle';
+    gctx.fillStyle = 'rgba(47,58,63,.14)';
+    gctx.fillText(ch, w/2, w * 0.5);
+    gctx.restore();
+  }
+
+  wDrawn = false;
+  attachInk();
+}
+
+function attachInk(){
+  var c = $('#inkCv'); if(!c || !ictx) return;
+  var drawing = false, last = null, down = false;
+
+  function pos(ev){
+    var r = c.getBoundingClientRect();
+    return { x: ev.clientX - r.left, y: ev.clientY - r.top };
+  }
+  function style(){
+    ictx.strokeStyle = '#243038';
+    ictx.lineWidth = Math.max(9, c.clientWidth * 0.06);
+    ictx.lineCap = 'round'; ictx.lineJoin = 'round';
+  }
+
+  c.addEventListener('pointerdown', function(ev){
+    ev.preventDefault();
+    try{ c.setPointerCapture(ev.pointerId); }catch(e){}
+    drawing = true; down = true; last = pos(ev);
+    style();
+    ictx.beginPath();
+    ictx.arc(last.x, last.y, ictx.lineWidth/2, 0, Math.PI*2);
+    ictx.fillStyle = '#243038'; ictx.fill();
+    wDrawn = true;
+  });
+  c.addEventListener('pointermove', function(ev){
+    if(!drawing || !last) return;
+    ev.preventDefault();
+    var p = pos(ev);
+    style();
+    ictx.beginPath(); ictx.moveTo(last.x, last.y); ictx.lineTo(p.x, p.y); ictx.stroke();
+    last = p;
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(function(t){
+    c.addEventListener(t, function(){ drawing = false; last = null; if(down){ down = false; } });
+  });
+}
+
+function maskOf(ctx, N, isGlyph){
+  var cv = ctx.canvas, size = cv.width;
+  var data = ctx.getImageData(0,0,size,size).data;
+  var grid = new Uint8Array(N * N), count = 0;
+  var step = size > 500 ? 2 : 1;
+  for(var y=0;y<size;y+=step){
+    for(var x=0;x<size;x+=step){
+      var a = data[((y*size)+x)*4+3];
+      if(a > (isGlyph ? 60 : 40)){
+        var gx = (x / size * N) | 0, gy = (y / size * N) | 0;
+        var k = gy * N + gx;
+        if(!grid[k]){ grid[k] = 1; count++; }
+      }
+    }
+  }
+  return { grid: grid, count: count };
+}
+
+function dilate(grid, N){
+  var out = new Uint8Array(N * N);
+  for(var y=0;y<N;y++){
+    for(var x=0;x<N;x++){
+      if(!grid[y*N+x]) continue;
+      for(var dy=-1;dy<=1;dy++){
+        for(var dx=-1;dx<=1;dx++){
+          var ny = y+dy, nx = x+dx;
+          if(ny>=0 && ny<N && nx>=0 && nx<N) out[ny*N+nx] = 1;
+        }
+      }
+    }
+  }
+  return out;
+}
+
+function checkWrite(){
+  if(!wDrawn){ sfx.no(); toast('先喺田字格寫一次'); return; }
+  var w = Math.round($('#tian').clientWidth || 280);
+  var N = 48;
+  var ink = maskOf(ictx, N, false);
+  if(ink.count < 8){ sfx.no(); toast('寫得太少，再寫多幾筆'); return; }
+
+  var off = document.createElement('canvas');
+  off.width = ictx.canvas.width; off.height = ictx.canvas.height;
+  var octx = off.getContext('2d');
+  var dpr = off.width / w;
+  octx.scale(dpr, dpr);
+  octx.font = '600 ' + (w * 0.66) + 'px ' + SERIF;
+  octx.textAlign = 'center'; octx.textBaseline = 'middle';
+  octx.fillStyle = '#000';
+  octx.fillText(wCharsOf(wWord)[wChar], w/2, w * 0.5);
+  var glyph = maskOf(octx, N, true);
+
+  if(!glyph.count){ sfx.no(); toast('未能載入範字'); return; }
+
+  var gD = dilate(glyph.grid, N), iD = dilate(ink.grid, N);
+  var covered = 0, inside = 0;
+  for(var k=0;k<N*N;k++){
+    if(glyph.grid[k] && iD[k]) covered++;
+    if(ink.grid[k] && gD[k]) inside++;
+  }
+  var recall = covered / glyph.count;
+  var prec = inside / ink.count;
+  var score = Math.round(10 * (0.62 * recall + 0.38 * prec));
+  if(ink.count > glyph.count * 2.4) score = Math.min(score, 5);
+  if(ink.count < glyph.count * 0.3) score = Math.min(score, 4);
+  score = Math.max(0, Math.min(10, score));
+
+  var key = WORDS[wWord].w;
+  S.write = S.write || {};
+  var arr = S.write[key] || [];
+  arr[wChar] = Math.max(arr[wChar] || 0, score);
+  S.write[key] = arr;
+  save(); renderHome();
+
+  var box = $('#wScore');
+  var msg = score >= 9 ? '寫得好靚，同範字一樣！'
+          : score >= 7 ? '好嘢，過關！'
+          : score >= 5 ? '再寫一次會更好。'
+          : '跟住範字，慢慢一筆一筆寫。';
+  box.innerHTML = '<span class="scorebig">' + score + '<small> / 10</small></span>'
+                + '<span class="hintline">' + msg + '</span>';
+
+  if(score >= 7){
+    sfx.ok(); burst(30);
+    var dots = $$('#writeStage .cdot');
+    if(dots[wChar]) dots[wChar].classList.add('ok');
+    var cs = wCharsOf(wWord);
+    if(score >= 8 && wChar < cs.length - 1){
+      setTimeout(function(){
+        if(cur === 'write' && wWord !== null){ wChar++; renderWrite(); }
+      }, 1000);
+    }
+  } else { sfx.no(); }
+}
+
+var rzTimer = 0;
+addEventListener('resize', function(){
+  clearTimeout(rzTimer);
+  rzTimer = setTimeout(function(){
+    if(cur === 'write' && wWord !== null) renderWritePad();
+  }, 250);
+});
+
 /* ================= RESULT ================= */
 function collectWrong(){
   const out = [];
@@ -1093,6 +1446,7 @@ $('#btnReset').onclick = function(){
   cardIdx = 0; cardShown = false; fillIdx = 0;
   place = [null,null,null,null,null,null]; selWord = null;
   passChecked = false; bankOrder = shuffle(PASSAGE_BANK);
+  wWord = null; wChar = 0; wGuide = true;
   matchSel = null; matchRightOrder = null;
   $('#pFeed').innerHTML = ''; $('#fillNext').innerHTML = '';
   sfx.tap(); go('home');
